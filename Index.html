@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Purity's Birthday Surprise</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to bottom, #ffe6f0, #ccf2ff);
+      overflow: hidden;
+    }
+    #gameArea {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      background: url('https://i.imgur.com/R3zYH5b.png') center/cover no-repeat;
+    }
+    #basket {
+      width: 80px;
+      height: 80px;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: url('https://i.imgur.com/UJ8eZmJ.png') center/contain no-repeat;
+    }
+    .item {
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      top: -50px;
+      background: url('https://i.imgur.com/5yPiBEl.png') center/contain no-repeat;
+    }
+    #messageScreen {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.95);
+      text-align: center;
+      padding-top: 100px;
+      color: #444;
+    }
+    #messageScreen h1 {
+      color: #ff66b2;
+      font-size: 2.5em;
+    }
+    .reason {
+      margin-top: 20px;
+      font-size: 1.3em;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <audio id="bgMusic" loop autoplay>
+    <source src="https://cdn.pixabay.com/download/audio/2023/03/02/audio_48cd79aa71.mp3" type="audio/mp3">
+  </audio>  <div id="gameArea">
+    <div id="basket"></div>
+    <div id="messageScreen">
+      <h1>Happy Birthday, Purity! 🎉</h1>
+      <p style="max-width: 600px; margin: auto; font-size: 1.2em;">
+        I know we’ve only ever talked through text, but I wanted to do something a little different for your special day. You’re one of the kindest, most creative people I’ve met — and even from afar, that truly shines through. I hope this small surprise brings a smile to your face. 🎈
+        <br><br>— From someone who’s grateful they got to know you ✨
+      </p>
+      <div id="reasons"></div>
+    </div>
+  </div>  <script>
+    const basket = document.getElementById('basket');
+    const gameArea = document.getElementById('gameArea');
+    const messageScreen = document.getElementById('messageScreen');
+    const reasons = [
+      "You light up every conversation like a candle on a cake. 🕯️",
+      "Your kindness feels like a warm hug. 🤗",
+      "Your creativity makes the world brighter. 🎨",
+      "You’re thoughtful in a way that truly matters. 💖",
+      "You deserve every sprinkle of joy today! ✨"
+    ];
+    let caught = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      basket.style.left = `${e.clientX - 40}px`;
+    });
+
+    function dropItem() {
+      const item = document.createElement('div');
+      item.classList.add('item');
+      item.style.left = `${Math.random() * (window.innerWidth - 40)}px`;
+      gameArea.appendChild(item);
+
+      let top = 0;
+      const fall = setInterval(() => {
+        top += 5;
+        item.style.top = `${top}px`;
+
+        const basketRect = basket.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+
+        if (
+          itemRect.bottom >= basketRect.top &&
+          itemRect.left < basketRect.right &&
+          itemRect.right > basketRect.left
+        ) {
+          caught++;
+          item.remove();
+          clearInterval(fall);
+
+          if (caught >= 10) {
+            showMessage();
+          }
+        }
+
+        if (top > window.innerHeight) {
+          item.remove();
+          clearInterval(fall);
+        }
+      }, 30);
+    }
+
+    function showMessage() {
+      gameArea.innerHTML = '';
+      messageScreen.style.display = 'block';
+      reasons.sort(() => 0.5 - Math.random());
+      const reasonsDiv = document.getElementById('reasons');
+      reasons.slice(0, 3).forEach((text) => {
+        const p = document.createElement('p');
+        p.className = 'reason';
+        p.textContent = text;
+        reasonsDiv.appendChild(p);
+      });
+    }
+
+    setInterval(dropItem, 1000);
+  </script></body>
+  </html>
